@@ -1,5 +1,0 @@
-todo :
-1) Bot function to ask for userconfig (api_id,api_hash,phone_number)
-2) telethon + aiogram synchronize
-3) telethon scrapper wrapped in bot user-friendly interface
-4) bot menu should have /config /my_chats /get_members /message_all
