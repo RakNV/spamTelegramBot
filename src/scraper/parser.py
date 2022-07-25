@@ -1,5 +1,5 @@
 import csv
-from client import result, client
+from .client import result, clientl
 
 
 class Parser:
@@ -9,6 +9,7 @@ class Parser:
     def __init__(self):
         self.target_group = None
         self.all_participants = None
+        self.users = []
 
         Parser.chats.extend(result.chats)
 
@@ -36,7 +37,7 @@ class Parser:
     def get_participants(self):
         """gets participants data from group,chat,channel, ect."""
         print('Fetching Members...')
-        self.all_participants = client.get_participants(self.target_group)
+        self.all_participants = clientl.get_participants(self.target_group)
 
     def save_in_csv(self):
         """saves scrapped data in .csv file"""
@@ -66,4 +67,15 @@ class Parser:
                                  self.target_group.id])
         print('Members scraped successfully.')
 
+    def csv_to_list(self):
 
+        input_file = 'members.csv'
+        with open(input_file, encoding='UTF-8') as f:
+            rows = csv.reader(f, delimiter=",", lineterminator="\n")
+            next(rows, None)
+            for row in rows:
+                user = {'username': row[0],
+                        'id': int(row[1]),
+                        'access_hash': int(row[2]),
+                        'name': row[3]}
+                self.users.append(user)
