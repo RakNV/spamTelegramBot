@@ -5,17 +5,17 @@ from telethon.tl.types import InputPeerEmpty
 api_id = 15741274
 api_hash = '551169796fc89f6dfc844e0046b197c9'
 phone = '+380982159820'
+message = 'Здравствуй, я тестирую прогу, сорри за сообщение'
 
-
-client = TelegramClient(phone, api_id, api_hash)
+clientl = TelegramClient(phone, api_id, api_hash)
 
 # authorization happens here
-client.connect()
-if not client.is_user_authorized():
-    client.send_code_request(phone)
-    client.sign_in(phone, input('Enter the code: '))
+clientl.connect()
+if not clientl.is_user_authorized():
+    clientl.send_code_request(phone)
+    clientl.sign_in(phone, input('Enter the code: '))
 
-result = client(GetDialogsRequest(
+result = clientl(GetDialogsRequest(
     offset_date=None,  # last_date = None
     offset_id=0,
     offset_peer=InputPeerEmpty(),
