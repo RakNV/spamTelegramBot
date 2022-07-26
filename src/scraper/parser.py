@@ -1,5 +1,5 @@
 import csv
-from .client import result, clientl
+from .client import result, client
 
 
 class Parser:
@@ -37,7 +37,7 @@ class Parser:
     def get_participants(self):
         """gets participants data from group,chat,channel, ect."""
         print('Fetching Members...')
-        self.all_participants = clientl.get_participants(self.target_group)
+        self.all_participants = client.get_participants(self.target_group)
 
     def save_in_csv(self):
         """saves scrapped data in .csv file"""
