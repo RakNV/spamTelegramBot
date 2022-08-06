@@ -1,5 +1,5 @@
 import csv
-from .client import result, client
+from .client import results, authorized_clients
 
 
 class Parser:

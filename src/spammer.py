@@ -1,4 +1,4 @@
-from scraper.client import client
+from scraper.client import authorized_clients
 from telethon.tl.types import InputPeerUser
 from telethon.errors.rpcerrorlist import PeerFloodError, FloodWaitError
 from src.scraper.config import message, sleep_time
@@ -42,7 +42,7 @@ class Spammer:
             return False
 
     @staticmethod
-    def message_user(user, receiver):
+    def message_user(client, user, receiver):
         print("Sending Message to:", user["name"])
         client.send_message(receiver, message.format(user["name"]))
         Spammer.messaged_users.append(user)
@@ -66,11 +66,12 @@ class Spammer:
                 if Spammer.is_messaged(user):
                     continue
                 else:
-                    Spammer.message_user(user, receiver)
+                    Spammer.message_user(authorized_clients[1],user, receiver)
 
             except PeerFloodError:
                 print("Getting Flood Error from telegram. Script is stopping now. Please try again after some time.")
-                client.disconnect()
+                for i in range(0,len(authorized_clients)):
+                    authorized_clients[i].disconnect()
                 sys.exit()
 
             except FloodWaitError as e:

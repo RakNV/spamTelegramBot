@@ -1,6 +1,6 @@
 from scraper.parser import Parser
 from spammer import Spammer
-from scraper.client import client
+from scraper.client import authorized_clients
 
 if __name__ == "__main__":
     try:
@@ -19,6 +19,7 @@ if __name__ == "__main__":
         print("\n\nSaving messaged users...")
         Spammer.save_messaged_user(Spammer.messaged_users)
         print("Exiting...")
-        client.disconnect()
+        for i in range(0, len(authorized_clients)):
+            authorized_clients[i].disconnect()
         exit()
 
