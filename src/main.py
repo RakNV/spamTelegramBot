@@ -1,4 +1,4 @@
-from src.scraper.client import connect_all_clients
+from src.clients.client import connect_all_clients
 from src.scraper.parser import Parser
 from src.spammer import Spammer
 

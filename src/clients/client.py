@@ -16,8 +16,11 @@ class Client:
 
 # authorization happens here
     def client_connect(self, phone, api_id, api_hash):
+        session_path = f"D:\projects\spamBot\src\Sessions\{phone}.session"
+        file = open(session_path, "a")
+        file.close()
 
-        tlclient = TelegramClient(phone, api_id, api_hash)
+        tlclient = TelegramClient(session_path, api_id, api_hash)
         tlclient.connect()
 
         while not tlclient.is_user_authorized():
@@ -64,7 +67,7 @@ def get_client_data(file_path):
 
 
 def connect_all_clients():
-    file = "D:\projects\spamBot\src\scraper\clients_data.csv"
+    file = "clients_data.csv"
     clients_to_authorize = get_client_data(file)
     authorized_clients_list = []
     for cl_data in clients_to_authorize:
@@ -74,6 +77,3 @@ def connect_all_clients():
         authorized_clients_list.append(current_client)
     print(authorized_clients_list)
     return authorized_clients_list
-
-
-

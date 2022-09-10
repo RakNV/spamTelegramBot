@@ -51,7 +51,7 @@ class Spammer:
         Spammer.load_messaged_users()
         counter = 0
         for user in users:
-            if counter == 2:
+            if counter == 45:
                 break
             receiver = InputPeerUser(user["id"], user["access_hash"])
             try:
