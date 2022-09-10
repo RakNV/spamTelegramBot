@@ -2,4 +2,6 @@
 __pycahe__
 idea.txt
 members.csv
-+380982159820.session
+src/__pycache__/
+src/clients/__pycache__/
+src/scraper/__pycache__/
