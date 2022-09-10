@@ -1,5 +1,6 @@
 from telethon.tl.types import InputPeerUser
 from telethon.errors.rpcerrorlist import PeerFloodError, FloodWaitError
+from telethon.errors.common import MultiError
 from src.scraper.config import message, sleep_time
 import time
 import re
@@ -22,7 +23,7 @@ class Spammer:
     def get_all_participants(self):
         """gets participants data from group,chat,channel, ect."""
         print('Fetching Members...')
-        self.all_participants = self.client.tlclient.get_participants(self.target_group)
+        self.all_participants = self.client.tlclient.get_participants(self.target_group, limit=4000)
         users = []
         for user_data in self.all_participants:
             if user_data.username:
@@ -51,14 +52,14 @@ class Spammer:
         Spammer.load_messaged_users()
         counter = 0
         for user in users:
-            if counter == 45:
+            if counter == 2:
                 break
             receiver = InputPeerUser(user["id"], user["access_hash"])
             try:
                 if Spammer.is_messaged(user):
                     continue
                 else:
-                    self.message_user(user, receiver) # have to change THIS line of code authorized clients[index] change  to client argument in function
+                    self.message_user(user, receiver) #  have to change THIS line of code authorized clients[index] change  to client argument in function
                     counter += 1
 
             except PeerFloodError:

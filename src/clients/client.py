@@ -17,8 +17,13 @@ class Client:
 # authorization happens here
     def client_connect(self, phone, api_id, api_hash):
         session_path = f"D:\projects\spamBot\src\Sessions\{phone}.session"
-        file = open(session_path, "a")
-        file.close()
+        try:
+            file = open(session_path, "a")
+            file.close()
+        except FileNotFoundError as e:
+            print(e)
+            print("Check your session_path again something wrong with it!")
+            exit("Session path error")
 
         tlclient = TelegramClient(session_path, api_id, api_hash)
         tlclient.connect()
@@ -53,17 +58,21 @@ class Client:
 
 def get_client_data(file_path):
     clients_list = []
-    with open(file_path) as f:
-        rows = csv.reader(f, delimiter=",", lineterminator="\n")
-        next(rows, None)
-        for row in rows:
-            client_data = {
-                    "api_id": row[0],
-                    "api_hash": row[1],
-                    "phone": row[2]
-                }
-            clients_list.append(client_data)
-        return clients_list
+    try:
+        with open(file_path) as f:
+            rows = csv.reader(f, delimiter=",", lineterminator="\n")
+            next(rows, None)
+            for row in rows:
+                client_data = {
+                        "api_id": row[0],
+                        "api_hash": row[1],
+                        "phone": row[2]
+                    }
+                clients_list.append(client_data)
+            return clients_list
+    except FileNotFoundError as e:
+        print(e)
+        print("Something wrong with your client_data.csv file! Check if it exists or its name is valid")
 
 
 def connect_all_clients():
