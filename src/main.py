@@ -17,7 +17,6 @@ def main():
         sp.get_group(group_list=group_list, target_group_name=ps.target_group_name)
         sp.get_all_participants()
         sp.message_45_users(sp.all_participants)
-        print(len(sp.messaged_users))
         sp.save_messaged_user(sp.messaged_users)
 
 
