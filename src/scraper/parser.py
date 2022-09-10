@@ -1,81 +1,84 @@
-import csv
-from .client import results, authorized_clients
-
-
 class Parser:
-    chats = []
     groups = []
+    available_chat_names = None
+    target_chat = None
+    client_chat = None
 
-    def __init__(self):
-        self.target_group = None
+    def __init__(self, clients):
+        self.target_group_name = None
         self.all_participants = None
         self.users = []
+        self.clients_list = clients
 
-        Parser.chats.extend(result.chats)
+    def get_chats(self):
+        chats = []
+        for client in self.clients_list:
+            current_client_chats = []
+            for chat in client.result.chats:
+                try:
+                    if chat.megagroup:
+                        current_client_chats.append(chat)
+                    else:
+                        continue
+                except:
+                    continue
+            chats.append(current_client_chats)
+        target = self.is_in_common(chats)
 
-        for chat in Parser.chats:
-            try:
-                if chat.megagroup:
-                    Parser.groups.append(chat)
-            except:
-                continue
+        Parser.available_chat_names = target
+        Parser.client_chat = zip(self.clients_list, target)
 
     @staticmethod
     def print_groups():
         """prints available groups for scraping"""
         print('Choose a group to scrape members from:')
         i = 0
-        for g in Parser.groups:
-            print(str(i) + '- ' + g.title)
+        for g in Parser.available_chat_names[0]:
+            print('[' + str(i) + ']' + '-' + g.title)
             i += 1
 
     def choose_group(self):
         """takes int input for group you want to scrap"""
-        g_index = input("Enter a Number: ")
-        self.target_group = Parser.groups[int(g_index)]
+        try:
+            g_index = input("Enter a Number: ")
+            self.target_group_name = Parser.available_chat_names[0][int(g_index)].title
+        except IndexError:
+            print("Choose available number!!!")
+            g_index = input("Enter a Number: ")
+            self.target_group_name = Parser.available_chat_names[0][int(g_index)].title
 
-    def get_participants(self):
-        """gets participants data from group,chat,channel, ect."""
-        print('Fetching Members...')
-        self.all_participants = client.get_participants(self.target_group)
+    @staticmethod
+    def is_in_common(obj_list):
+        organized_obj_list = []
+        for obj in obj_list:
+            new_obj = []
+            for group in obj:
+                new_obj.append(group.title)
+            organized_obj_list.append(new_obj)
 
-    def save_in_csv(self):
-        """saves scrapped data in .csv file"""
-        print('Saving In file...')
-        with open("members.csv", "w", encoding='UTF-8') as f:
-            writer = csv.writer(f, delimiter=",", lineterminator="\n")
-            writer.writerow(['username', 'user id', 'access hash', 'name', 'group', 'group id'])
-            for user in self.all_participants:
-                if user.username:
-                    username = user.username
-                else:
-                    username = ""
-                if user.first_name:
-                    first_name = user.first_name
-                else:
-                    first_name = ""
-                if user.last_name:
-                    last_name = user.last_name
-                else:
-                    last_name = ""
-                name = (first_name + ' ' + last_name).strip()
-                writer.writerow([username,
-                                 user.id,
-                                 user.access_hash,
-                                 name,
-                                 self.target_group.title,
-                                 self.target_group.id])
-        print('Members scraped successfully.')
+        if len(organized_obj_list) == 1:
+            return organized_obj_list[0]
+        tmp = set(organized_obj_list[0]).intersection(set(organized_obj_list[1]))
+        for obj in organized_obj_list:
+            tmp = tmp.intersection(obj)
 
-    def csv_to_list(self):
+        res = []
+        for obj in obj_list:
+            final = []
+            for group in obj:
+                if group.title in list(tmp):
+                    final.append(group)
+            res.append(final)
+        return res
 
-        input_file = 'members.csv'
-        with open(input_file, encoding='UTF-8') as f:
-            rows = csv.reader(f, delimiter=",", lineterminator="\n")
-            next(rows, None)
-            for row in rows:
-                user = {'username': row[0],
-                        'id': int(row[1]),
-                        'access_hash': int(row[2]),
-                        'name': row[3]}
-                self.users.append(user)
+    def save_user_data(self):
+        """saves scrapped data in list"""
+        for entity in self.all_participants:
+            name = (str(entity.first_name) + ' ' + str(entity.last_name)).strip()
+            user = {
+                'username': entity.username,
+                'id': entity.id,
+                'access_hash': entity.access_hash,
+                'name': name
+            }
+            self.users.append(user)
